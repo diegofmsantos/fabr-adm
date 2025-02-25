@@ -7,10 +7,10 @@ export const api = axios.create({
   baseURL: process.env.NEXT_PUBLIC_API_BASE_URL,
 });
 
-// Função para obter os times
-export const getTimes = async (): Promise<Time[]> => {
+// Função para obter os times com filtro de temporada
+export const getTimes = async (temporada = '2024'): Promise<Time[]> => {
   try {
-    const response = await api.get('/times')
+    const response = await api.get(`/times?temporada=${temporada}`)
     return response.data || []
   } catch (error) {
     console.error('Erro ao buscar times:', error)
@@ -21,7 +21,12 @@ export const getTimes = async (): Promise<Time[]> => {
 // Função para adicionar um time
 export const addTime = async (data: Omit<Time, "id">): Promise<Time> => {
   try {
-    const response = await api.post('/time', data)
+    // Garante que temporada exista no objeto
+    const timeData = {
+      ...data,
+      temporada: data.temporada || '2024'
+    }
+    const response = await api.post('/time', timeData)
     return response.data
   } catch (error) {
     console.error('Erro ao adicionar time:', error)
@@ -62,9 +67,18 @@ export const addJogador = async (data: Omit<Jogador, 'id'>): Promise<Jogador> =>
 }
 
 // Função para atualizar um jogador
-export const atualizarJogador = async (data: Jogador): Promise<Jogador> => {
+export const atualizarJogador = async (data: any): Promise<Jogador> => {
+  // Aqui enviamos os campos do jogador e também as informações para o relacionamento
   try {
-    const response = await api.put(`/jogador/${data.id}`, data);
+    const response = await api.put(`/jogador/${data.id}`, {
+      ...data,
+      // Incluir informações para o relacionamento
+      timeId: data.timeId,
+      temporada: data.temporada, 
+      numero: data.numero,
+      camisa: data.camisa,
+      estatisticas: data.estatisticas
+    });
     return response.data;
   } catch (error) {
     console.error(`Erro ao atualizar o jogador com ID ${data.id}:`, error);
@@ -146,4 +160,13 @@ export const deleteNoticia = async (id: number): Promise<void> => {
   }
 };
 
-
+// Função para iniciar nova temporada
+export const iniciarTemporada = async (ano: string, alteracoes: any): Promise<any> => {
+  try {
+    const response = await api.post(`/iniciar-temporada/${ano}`, alteracoes)
+    return response.data
+  } catch (error) {
+    console.error(`Erro ao iniciar temporada ${ano}:`, error)
+    throw new Error('Falha ao iniciar nova temporada')
+  }
+}

@@ -15,7 +15,6 @@ import ModalJogador from "@/components/Modal/ModalJogador";
 import ModalSucesso from "../Modal/ModalSucesso"
 import { camposJogador, camposNumericosJogador, camposTime, estatisticas } from "../../utils/campos"
 import Link from "next/link"
-import LogoutButton from "../LogoutButton"
 
 type TimeFormData = z.infer<typeof TimeSchema>
 type JogadorFormData = z.infer<typeof JogadorSchema>
@@ -28,6 +27,9 @@ export default function Formulario() {
         reset
     } = useForm<TimeFormData>({
         resolver: zodResolver(TimeSchema),
+        defaultValues: {
+            temporada: "2024" // Valor padrão para temporada (presumindo que TimeSchema inclua temporada)
+        }
     })
 
     const {
@@ -59,12 +61,14 @@ export default function Formulario() {
     const [isJogadorModalOpen, setIsJogadorModalOpen] = useState(false)
     const [isSuccessModalOpen, setIsSuccessModalOpen] = useState(false)
     const [successMessage, setSuccessMessage] = useState("")
+    const [temporadaSelecionada, setTemporadaSelecionada] = useState("2024")
+    const [jogadorTemporada, setJogadorTemporada] = useState("2024") // Estado para temporada do jogador
 
-    // Fetch dos times quando o componente é montado
+    // Fetch dos times quando o componente é montado ou a temporada muda
     useEffect(() => {
         const fetchTimes = async () => {
             try {
-                const data = await getTimes()
+                const data = await getTimes(temporadaSelecionada)
                 setTimes(data)
             } catch (error) {
                 console.error("Erro ao buscar os times:", error)
@@ -73,7 +77,7 @@ export default function Formulario() {
             }
         }
         fetchTimes()
-    }, [])
+    }, [temporadaSelecionada])
 
     const removeEmptyFields = (obj: any) => {
         return Object.fromEntries(
@@ -104,8 +108,10 @@ export default function Formulario() {
                 ])
             );
 
+            // Adicionar temporada manualmente ao objeto de dados
             const jogadorData = {
                 ...data,
+                temporada: jogadorTemporada, // Usar o estado da temporada
                 estatisticas: estatisticasFiltradas,
             };
 
@@ -129,15 +135,34 @@ export default function Formulario() {
         )
     }
 
+    // Função para lidar com mudança de temporada
+    const handleTemporadaChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+        setTemporadaSelecionada(e.target.value);
+    }
+
     return (
         <div className="p-4 overflow-x-hidden bg-[#1C1C24] min-h-screen">
-            <LogoutButton />
             <Link
                 href={`/materia`}
                 className="w-44 h-12 font-bold text-lg bg-[#63E300] p-2 text-center rounded-md absolute right-6 top-6 text-black hover:bg-[#50B800] transition-colors"
             >
                 Painel de Matérias
             </Link>
+
+            {/* Seletor de temporada global */}
+            <div className="flex justify-center mb-8 mt-4">
+                <div className="flex items-center">
+                    <label className="text-white mr-2 font-bold">Temporada:</label>
+                    <select
+                        value={temporadaSelecionada}
+                        onChange={handleTemporadaChange}
+                        className="bg-[#272731] text-white px-4 py-2 rounded-md border border-gray-700"
+                    >
+                        <option value="2024">2024</option>
+                        <option value="2025">2025</option>
+                    </select>
+                </div>
+            </div>
 
             <div className="text-4xl font-bold text-white text-center mb-2 mt-12">Time</div>
 
@@ -154,6 +179,19 @@ export default function Formulario() {
                         error={errors[field.id as keyof TimeFormData] as FieldError | undefined}
                     />
                 ))}
+
+                {/* Campo de temporada para o time */}
+                <FormField
+                    label="Temporada"
+                    id="temporada"
+                    register={register("temporada")}
+                    error={errors.temporada as FieldError | undefined}
+                    type="select"
+                    options={[
+                        { value: "2024", label: "2024" },
+                        { value: "2025", label: "2025" },
+                    ]}
+                />
 
                 {/* Campos de Títulos */}
                 {(["nacionais", "conferencias", "estaduais"] as const).map((titulo) => (
@@ -200,6 +238,21 @@ export default function Formulario() {
                                 .filter((time) => time.id !== undefined && time.nome !== undefined)
                                 .map((time) => ({ value: time.id as number, label: time.nome as string }))}
                         />
+
+                        {/* Campo de temporada para jogador (usando um select normal) */}
+                        <div className="mb-4 w-full">
+                            <label className="block text-white text-sm font-medium mb-2">
+                                Temporada
+                            </label>
+                            <select
+                                value={jogadorTemporada}
+                                onChange={(e) => setJogadorTemporada(e.target.value)}
+                                className="w-full px-3 py-2 bg-[#272731] border border-gray-700 rounded-lg text-white focus:outline-none focus:border-[#63E300]"
+                            >
+                                <option value="2024">2024</option>
+                                <option value="2025">2025</option>
+                            </select>
+                        </div>
 
                         {/* Campos do Jogador */}
                         {camposJogador.map((field) => (
@@ -291,12 +344,13 @@ export default function Formulario() {
                             e.currentTarget.style.backgroundColor = "transparent";
                             e.currentTarget.style.color = '#fff';
                             e.currentTarget.style.transform = 'translateY(0)';
-                            e.currentTarget.style.borderColor = '#374151'; 
+                            e.currentTarget.style.borderColor = '#374151';
                         }}
                     >
                         <h2 className="text-xl font-bold">{time.nome}</h2>
                         <p className="text-gray-300">Sigla: {time.sigla}</p>
                         <p className="text-gray-300">Cidade: {time.cidade}</p>
+                        <p className="text-gray-300">Temporada: {time.temporada}</p>
                     </div>
                 ))}
             </div>

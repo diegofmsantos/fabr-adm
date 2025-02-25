@@ -9,18 +9,13 @@ export default function ModalJogador({
     jogador: Jogador;
     closeModal: () => void;
 }) {
-    const [formData, setFormData] = useState<Jogador & { altura: string }>({
-        ...jogador, // @ts-ignore
+    const [formData, setFormData] = useState({
+        ...jogador,
+        // Tratamos altura como string no formulário
         altura: jogador.altura !== undefined ? String(jogador.altura).replace(".", ",") : "",
-        estatisticas: jogador.estatisticas || {
-            passe: { passes_completos: 0, passes_tentados: 0, jardas_de_passe: 0, td_passados: 0, interceptacoes_sofridas: 0, sacks_sofridos: 0, fumble_de_passador: 0 },
-            corrida: { corridas: 0, jardas_corridas: 0, tds_corridos: 0, fumble_de_corredor: 0 },
-            recepcao: { recepcoes: 0, alvo: 0, jardas_recebidas: 0, tds_recebidos: 0 },
-            retorno: { retornos: 0, jardas_retornadas: 0, td_retornados: 0 },
-            defesa: { tackles_totais: 0, tackles_for_loss: 0, sacks_forcado: 0, fumble_forcado: 0, interceptacao_forcada: 0, passe_desviado: 0, safety: 0, td_defensivo: 0 },
-            kicker: { xp_bons: 0, tentativas_de_xp: 0, fg_bons: 0, tentativas_de_fg: 0, fg_mais_longo: 0 },
-            punter: { punts: 0, jardas_de_punt: 0 },
-        },
+        // Incluímos temporada do relacionamento para o formulário
+        temporada: jogador.times?.[0]?.temporada || "2024",
+        estatisticas: jogador.estatisticas || { /* valores padrão */ }
     });
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -38,19 +33,23 @@ export default function ModalJogador({
         const { name, value } = e.target;
         const [groupKey, fieldKey] = name.split(".") as [keyof Estatisticas, string];
 
-        // @ts-ignore
         setFormData((prev) => {
-            const estatisticas = { ...prev.estatisticas };
-            if (!estatisticas[groupKey]) {
-                // @ts-ignore
+            // Definir o tipo corretamente aqui para evitar o erro
+            const estatisticas = { ...prev.estatisticas } as Estatisticas;
+
+            // Inicializar grupo se não existir
+            if (!estatisticas[groupKey]) { // @ts-ignore
                 estatisticas[groupKey] = {};
             }
 
-            // @ts-ignore
-            estatisticas[groupKey][fieldKey] =
-                groupKey === "kicker" && fieldKey.startsWith("fg")
-                    ? value // Aceita valores como "1/1"
-                    : value === "" ? 0 : Number(value); // Valores vazios viram 0
+            // Definir o valor no campo apropriado
+            if (groupKey === "kicker" && fieldKey.startsWith("fg")) {
+                // @ts-ignore - Para valores como "1/1"
+                estatisticas[groupKey][fieldKey] = value;
+            } else {
+                // @ts-ignore - Para valores numéricos
+                estatisticas[groupKey][fieldKey] = value === "" ? 0 : Number(value);
+            }
 
             return { ...prev, estatisticas };
         });
@@ -58,37 +57,32 @@ export default function ModalJogador({
 
     const handleSave = async () => {
         try {
-            const dataToSave = {
-                ...formData, // @ts-ignore
-                altura: parseFloat(formData.altura.replace(",", ".")), // Converte altura para número
-                // @ts-ignore
-                peso: parseFloat(formData.peso), // Converte peso para número
-                // @ts-ignore
-                idade: parseInt(formData.idade, 10), // Converte idade para número
-                // @ts-ignore
-                experiencia: parseInt(formData.experiencia, 10), // Converte experiência para número
-                // @ts-ignore
-                numero: parseInt(formData.numero, 10), // Converte número para número
+            // Crie um objeto intermediário para evitar problemas de tipo
+            const parsedValues = {
+                altura: parseFloat(String(formData.altura).replace(",", ".")),
+                peso: Number(formData.peso),
+                idade: Number(formData.idade),
+                experiencia: Number(formData.experiencia),
+                numero: Number(formData.numero)
             };
 
-            // Ajusta estatísticas para evitar valores inválidos
-            const estatisticasCorrigidas = Object.fromEntries(
-                Object.entries(dataToSave.estatisticas || {}).map(([groupKey, fields]) => [
-                    groupKey,
-                    Object.fromEntries(
-                        Object.entries(fields || {}).filter( // @ts-ignore
-                            ([_, value]) => value !== undefined && value !== ""
-                        )
-                    ),
-                ])
-            );
+            // Então crie o objeto final a ser enviado
+            const dataToSave = {
+                ...formData,
+                ...parsedValues, // Sobrescreve os valores com as versões numéricas
+            };
 
-            // @ts-ignore
-            dataToSave.estatisticas = estatisticasCorrigidas;
+            // Criar um objeto específico para enviar à API
+            const apiData = {
+                ...dataToSave,
+                id: jogador.id,
+                timeId: jogador.timeId,
+                temporada: formData.temporada || "2024"
+            };
 
-            // Utilize a função `atualizarJogador` para fazer a atualização
-            // @ts-ignore
-            await atualizarJogador({ ...dataToSave, id: jogador.id });
+            // Enviar para a API
+            await atualizarJogador(apiData);
+
             alert("Jogador atualizado com sucesso!");
             closeModal();
         } catch (error) {

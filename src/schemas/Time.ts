@@ -10,6 +10,7 @@ export const TitulosSchema = z.object({
 export const TimeSchema = z.object({
   id: z.number().optional(),
   nome: z.string(),
+  temporada: z.string(),
   sigla: z.string(),
   cor: z.string(),
   cidade: z.string(),

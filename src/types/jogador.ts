@@ -64,22 +64,37 @@ export type Classificacao = {
   }
   
   export type Jogador = {
-      id: number
-      nome: string
-      timeId: number
-      timeFormador: string
-      posicao: string
-      setor: "Ataque" | "Defesa" | "Special"
-      experiencia: number
-      numero: number
-      idade: number
-      altura: number
-      peso: number
-      instagram: string
-      instagram2: string
-      cidade: string
-      nacionalidade: string
-      camisa: string
-      estatisticas: Estatisticas
-      classificacoes: ClassificacaoPorCategoria
+    id: number;
+    nome: string;
+    posicao: string;
+    setor: 'Ataque' | 'Defesa' | 'Special';
+    experiencia: number;
+    idade: number;
+    altura: number;  // No banco é Float
+    peso: number;
+    instagram: string;
+    instagram2: string;
+    cidade: string;
+    nacionalidade: string;
+    timeFormador: string;
+    
+    // Estes não são campos do Jogador no novo modelo, 
+    // mas são úteis para o frontend
+    timeId?: number;
+    numero?: number;
+    camisa?: string;
+    estatisticas?: Estatisticas;
+    
+    // Propriedade para relações
+    times?: JogadorTime[];
+  }
+
+  export interface JogadorTime {
+    id: number;
+    jogadorId: number;
+    timeId: number;
+    temporada: string;  // A temporada está aqui, não no Jogador
+    numero: number;
+    camisa: string;
+    estatisticas: Estatisticas;
   }
