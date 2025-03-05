@@ -1,6 +1,9 @@
-import { useState } from "react";
+"use client"
+
+import { useState, useEffect } from "react";
 import { atualizarJogador, deletarJogador } from "@/api/api";
 import { Estatisticas, Jogador } from "@/types/jogador";
+import { useRouter } from "next/navigation";
 
 export default function ModalJogador({
     jogador,
@@ -9,16 +12,16 @@ export default function ModalJogador({
     jogador: Jogador;
     closeModal: () => void;
 }) {
+    const router = useRouter();
+    
     const [formData, setFormData] = useState({
         ...jogador,
-        // Tratamos altura como string no formulário
         altura: jogador.altura !== undefined ? String(jogador.altura).replace(".", ",") : "",
-        // Incluímos temporada do relacionamento para o formulário
-        temporada: jogador.times?.[0]?.temporada || "2024",
-        estatisticas: jogador.estatisticas || { /* valores padrão */ }
+        temporada: jogador.times?.[0]?.temporada || "2025", // Ajuste aqui
+        estatisticas: jogador.estatisticas || {}
     });
 
-    const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
         const { name, value } = e.target;
 
         setFormData((prev) => ({
@@ -34,22 +37,15 @@ export default function ModalJogador({
         const [groupKey, fieldKey] = name.split(".") as [keyof Estatisticas, string];
 
         setFormData((prev) => {
-            // Definir o tipo corretamente aqui para evitar o erro
             const estatisticas = { ...prev.estatisticas } as Estatisticas;
 
-            // Inicializar grupo se não existir
-            if (!estatisticas[groupKey]) { // @ts-ignore
+            if (!estatisticas[groupKey]) { //@ts-ignore
                 estatisticas[groupKey] = {};
             }
-
-            // Definir o valor no campo apropriado
-            if (groupKey === "kicker" && fieldKey.startsWith("fg")) {
-                // @ts-ignore - Para valores como "1/1"
-                estatisticas[groupKey][fieldKey] = value;
-            } else {
-                // @ts-ignore - Para valores numéricos
-                estatisticas[groupKey][fieldKey] = value === "" ? 0 : Number(value);
-            }
+            //@ts-ignore
+            estatisticas[groupKey][fieldKey] = value === "" 
+                ? 0 
+                : (fieldKey.startsWith("fg") ? value : Number(value));
 
             return { ...prev, estatisticas };
         });
@@ -57,34 +53,40 @@ export default function ModalJogador({
 
     const handleSave = async () => {
         try {
-            // Crie um objeto intermediário para evitar problemas de tipo
+            // Converta corretamente o valor da altura
+            const altura = formData.altura
+                ? Number(String(formData.altura).replace(',', '.'))
+                : jogador.altura;
+    
             const parsedValues = {
-                altura: parseFloat(String(formData.altura).replace(",", ".")),
+                altura: altura, // Use o valor de altura corretamente convertido
                 peso: Number(formData.peso),
                 idade: Number(formData.idade),
                 experiencia: Number(formData.experiencia),
                 numero: Number(formData.numero)
             };
-
-            // Então crie o objeto final a ser enviado
+    
             const dataToSave = {
-                ...formData,
-                ...parsedValues, // Sobrescreve os valores com as versões numéricas
+                ...parsedValues, // Coloque os valores convertidos primeiro
+                ...formData, // Depois espalhe o resto do formData
+                altura: altura, // Garanta que altura use o valor corretamente convertido
+                temporada: formData.temporada || "2025",
+                estatisticas: formData.estatisticas // Mantenha as estatísticas
             };
-
-            // Criar um objeto específico para enviar à API
+    
             const apiData = {
                 ...dataToSave,
                 id: jogador.id,
                 timeId: jogador.timeId,
-                temporada: formData.temporada || "2024"
             };
-
-            // Enviar para a API
+    
+            console.log('Dados completos para atualização:', JSON.stringify(apiData, null, 2));
+    
             await atualizarJogador(apiData);
-
+    
             alert("Jogador atualizado com sucesso!");
             closeModal();
+            router.refresh(); // Força recarregamento
         } catch (error) {
             console.error("Erro ao atualizar jogador:", error);
             alert("Erro ao salvar alterações.");
@@ -96,10 +98,10 @@ export default function ModalJogador({
             const confirmDelete = confirm("Tem certeza que deseja excluir este jogador?");
             if (!confirmDelete) return;
 
-            // Usar a função reutilizável para deletar jogador
             await deletarJogador(jogador.id);
             alert("Jogador excluído com sucesso!");
             closeModal();
+            router.refresh(); // Força recarregamento
         } catch (error) {
             console.error("Erro ao excluir jogador:", error);
             alert("Erro ao excluir jogador. Verifique os logs para mais detalhes.");

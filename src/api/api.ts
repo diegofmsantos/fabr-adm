@@ -8,8 +8,10 @@ export const api = axios.create({
 });
 
 // Função para obter os times com filtro de temporada
+// Adicione logs para verificar o URL
 export const getTimes = async (temporada = '2024'): Promise<Time[]> => {
   try {
+    console.log(`Buscando times com URL: ${api.defaults.baseURL}/times?temporada=${temporada}`);
     const response = await api.get(`/times?temporada=${temporada}`)
     return response.data || []
   } catch (error) {
@@ -55,6 +57,18 @@ export const deletarTime = async (id: number): Promise<void> => {
   }
 }
 
+// Função para obter jogadores com filtro de temporada
+export const getJogadores = async (temporada = '2024'): Promise<any[]> => {
+  try {
+    console.log(`Buscando jogadores com URL: ${api.defaults.baseURL}/jogadores?temporada=${temporada}`);
+    const response = await api.get(`/jogadores?temporada=${temporada}`)
+    return response.data || []
+  } catch (error) {
+    console.error('Erro ao buscar jogadores:', error)
+    throw new Error('Falha ao buscar jogadores')
+  }
+}
+
 // Função para adicionar um jogador
 export const addJogador = async (data: Omit<Jogador, 'id'>): Promise<Jogador> => {
   try {
@@ -77,7 +91,8 @@ export const atualizarJogador = async (data: any): Promise<Jogador> => {
       temporada: data.temporada, 
       numero: data.numero,
       camisa: data.camisa,
-      estatisticas: data.estatisticas
+      estatisticas: data.estatisticas,
+      altura: data.altura
     });
     return response.data;
   } catch (error) {
