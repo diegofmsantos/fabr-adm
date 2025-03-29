@@ -148,6 +148,12 @@ export default function Formulario() {
             >
                 Painel de Matérias
             </Link>
+            <Link
+                href={`/temporada`}
+                className="w-52 h-12 font-bold text-lg bg-[#63E300] p-2 text-center rounded-md absolute right-6 top-20 text-black hover:bg-[#50B800] transition-colors"
+            >
+                Painel de Temporada
+            </Link>
 
             {/* Seletor de temporada global */}
             <div className="flex justify-center mb-8 mt-4">

@@ -87,6 +87,12 @@ export const FormMateria = () => {
         >
           Painel de Times
         </Link>
+        <Link
+                href={`/temporada`}
+                className="w-52 h-12 font-bold text-lg bg-[#63E300] p-2 text-center rounded-md absolute right-6 top-20 text-black hover:bg-[#50B800] transition-colors"
+            >
+                Painel de Temporada
+            </Link>
         <h1 className="text-2xl font-bold text-white mb-6">Nova Matéria</h1>
 
         <div className="space-y-6">

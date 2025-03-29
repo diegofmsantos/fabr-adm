@@ -5,6 +5,7 @@ import { iniciarTemporada, getTimes, getJogadores } from "@/api/api"
 import { Time } from "@/types/time"
 import { TeamChangesForm, TimeChange } from "@/components/TeamChangesForm"
 import { PlayerTransferForm, Transferencia } from "@/components/PlayerTransferForm"
+import Link from "next/link"
 
 export default function IniciarTemporadaPage() {
   const [times, setTimes] = useState<Time[]>([]);
@@ -133,6 +134,18 @@ export default function IniciarTemporadaPage() {
 
   return (
     <div className="p-4 overflow-x-hidden bg-[#1C1C24] min-h-screen">
+      <Link
+        href={`/`}
+        className="w-44 h-12 font-bold text-lg bg-[#63E300] p-2 text-center rounded-md absolute right-6 top-6 text-black hover:bg-[#50B800] transition-colors"
+      >
+        Painel de Times
+      </Link>
+      <Link
+        href={`/materia`}
+        className="w-52 h-12 font-bold text-lg bg-[#63E300] p-2 text-center rounded-md absolute right-56 top-6 text-black hover:bg-[#50B800] transition-colors"
+      >
+        Painel de Matérias
+      </Link>
       <h1 className="text-4xl font-bold text-white text-center mb-8">Iniciar Temporada {targetSeason}</h1>
 
       {/* Seleção de temporadas */}
