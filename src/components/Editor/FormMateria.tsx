@@ -83,16 +83,10 @@ export const FormMateria = () => {
       <form onSubmit={handleSubmit} className="max-w-4xl mx-auto bg-[#272731] p-6 rounded-lg shadow">
         <Link
           href={`/`}
-          className="w-44 h-12 font-bold text-lg bg-[#63E300] p-2 text-center rounded-md absolute right-6 top-6 text-black hover:bg-[#50B800] transition-colors"
+          className="w-20 h-11 font-bold text-lg bg-[#63E300] p-2 text-center rounded-md absolute right-6 left-6 text-black hover:bg-[#50B800] transition-colors"
         >
-          Painel de Times
+          Home
         </Link>
-        <Link
-                href={`/temporada`}
-                className="w-52 h-12 font-bold text-lg bg-[#63E300] p-2 text-center rounded-md absolute right-6 top-20 text-black hover:bg-[#50B800] transition-colors"
-            >
-                Painel de Temporada
-            </Link>
         <h1 className="text-2xl font-bold text-white mb-6">Nova Matéria</h1>
 
         <div className="space-y-6">

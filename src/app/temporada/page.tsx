@@ -136,15 +136,9 @@ export default function IniciarTemporadaPage() {
     <div className="p-4 overflow-x-hidden bg-[#1C1C24] min-h-screen">
       <Link
         href={`/`}
-        className="w-44 h-12 font-bold text-lg bg-[#63E300] p-2 text-center rounded-md absolute right-6 top-6 text-black hover:bg-[#50B800] transition-colors"
+        className="w-20 h-11 font-bold text-lg bg-[#63E300] p-2 text-center rounded-md absolute right-6 left-6 text-black hover:bg-[#50B800] transition-colors"
       >
-        Painel de Times
-      </Link>
-      <Link
-        href={`/materia`}
-        className="w-52 h-12 font-bold text-lg bg-[#63E300] p-2 text-center rounded-md absolute right-56 top-6 text-black hover:bg-[#50B800] transition-colors"
-      >
-        Painel de Matérias
+        Home
       </Link>
       <h1 className="text-4xl font-bold text-white text-center mb-8">Iniciar Temporada {targetSeason}</h1>
 
