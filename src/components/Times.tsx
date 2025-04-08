@@ -489,7 +489,7 @@ export const Times = () => {
                                         
                                         <div className="bg-[#1C1C24] px-5 py-3 flex justify-end">
                                             <button className="text-xs text-[#63E300] font-medium hover:text-white transition-colors">
-                                                Ver detalhes
+                                                Ver detalhes 
                                             </button>
                                         </div>
                                     </div>
