@@ -126,3 +126,51 @@ export const estatisticas = [
         ],
     },
 ]
+
+export  // Campos organizados em grupos para melhor layout
+const fieldGroups = [
+    {
+        title: "Informações Básicas",
+        fields: [
+            { name: "nome", label: "Nome do Time" },
+            { name: "sigla", label: "Sigla" },
+            { name: "cor", label: "Cor" },
+            { name: "cidade", label: "Cidade" },
+            { name: "bandeira_estado", label: "Bandeira do Estado" },
+            { name: "fundacao", label: "Fundação" },
+            { name: "estadio", label: "Estádio" },
+        ]
+    },
+    {
+        title: "Redes Sociais",
+        fields: [
+            { name: "instagram", label: "Instagram" },
+            { name: "instagram2", label: "Instagram 2" },
+            { name: "instagram_coach", label: "Instagram Coach" },
+        ]
+    },
+    {
+        title: "Identidade Visual",
+        fields: [
+            { name: "logo", label: "Logo" },
+            { name: "capacete", label: "Capacete" }
+        ]
+    },
+    {
+        title: "Staff Técnico",
+        fields: [
+            { name: "presidente", label: "Presidente" },
+            { name: "head_coach", label: "Head Coach" },
+            { name: "coord_ofen", label: "Coordenador Ofensivo" },
+            { name: "coord_defen", label: "Coordenador Defensivo" },
+        ]
+    },
+    {
+        title: "Títulos",
+        fields: [
+            { name: "titulos.nacionais", label: "Títulos Nacionais" },
+            { name: "titulos.conferencias", label: "Títulos Conferências" },
+            { name: "titulos.estaduais", label: "Títulos Estaduais" },
+        ]
+    }
+];

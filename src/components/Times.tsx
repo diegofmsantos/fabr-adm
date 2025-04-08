@@ -64,6 +64,7 @@ export const Times = () => {
     const [temporadaSelecionada, setTemporadaSelecionada] = useState("2024")
     const [jogadorTemporada, setJogadorTemporada] = useState("2024")
     const [activeTab, setActiveTab] = useState<'time' | 'jogador' | 'times-cadastrados'>('time')
+    const [expandedGroups, setExpandedGroups] = useState<Record<string, boolean>>({})
 
     // Fetch dos times quando o componente é montado ou a temporada muda
     useEffect(() => {
@@ -141,6 +142,13 @@ export const Times = () => {
         setTemporadaSelecionada(e.target.value);
     }
 
+    const toggleGroup = (groupId: string) => {
+        setExpandedGroups(prev => ({
+            ...prev,
+            [groupId]: !prev[groupId]
+        }));
+    };
+
     return (
         <div className="bg-[#1C1C24] min-h-screen">
             {/* Header com navegação e seletor de temporada */}
@@ -150,7 +158,7 @@ export const Times = () => {
                         <span className="bg-[#63E300] text-black rounded-md px-3 py-1 mr-2">FABR</span>
                         Network
                     </Link>
-                    
+
                     <div className="flex items-center space-x-4">
                         <div className="flex items-center bg-[#1C1C24] px-3 py-2 rounded-lg">
                             <span className="text-white text-sm mr-2">Temporada:</span>
@@ -163,7 +171,7 @@ export const Times = () => {
                                 <option value="2025">2025</option>
                             </select>
                         </div>
-                        
+
                         <Link
                             href="/"
                             className="bg-gray-700 text-gray-200 hover:bg-gray-600 transition duration-200 px-3 py-2 rounded-lg text-sm"
@@ -180,39 +188,36 @@ export const Times = () => {
                     <nav className="flex space-x-1">
                         <button
                             onClick={() => setActiveTab('time')}
-                            className={`px-4 py-4 text-sm font-medium transition-colors relative ${
-                                activeTab === 'time'
+                            className={`px-4 py-4 text-sm font-medium transition-colors relative ${activeTab === 'time'
                                     ? 'text-[#63E300]'
                                     : 'text-gray-400 hover:text-white'
-                            }`}
+                                }`}
                         >
                             Adicionar Time
                             {activeTab === 'time' && (
                                 <span className="absolute bottom-0 left-0 w-full h-0.5 bg-[#63E300]"></span>
                             )}
                         </button>
-                        
+
                         <button
                             onClick={() => setActiveTab('jogador')}
-                            className={`px-4 py-4 text-sm font-medium transition-colors relative ${
-                                activeTab === 'jogador'
+                            className={`px-4 py-4 text-sm font-medium transition-colors relative ${activeTab === 'jogador'
                                     ? 'text-[#63E300]'
                                     : 'text-gray-400 hover:text-white'
-                            }`}
+                                }`}
                         >
                             Adicionar Jogador
                             {activeTab === 'jogador' && (
                                 <span className="absolute bottom-0 left-0 w-full h-0.5 bg-[#63E300]"></span>
                             )}
                         </button>
-                        
+
                         <button
                             onClick={() => setActiveTab('times-cadastrados')}
-                            className={`px-4 py-4 text-sm font-medium transition-colors relative ${
-                                activeTab === 'times-cadastrados'
+                            className={`px-4 py-4 text-sm font-medium transition-colors relative ${activeTab === 'times-cadastrados'
                                     ? 'text-[#63E300]'
                                     : 'text-gray-400 hover:text-white'
-                            }`}
+                                }`}
                         >
                             Times Cadastrados
                             {activeTab === 'times-cadastrados' && (
@@ -233,7 +238,7 @@ export const Times = () => {
                                 Temporada {temporadaSelecionada}
                             </span>
                         </div>
-                        
+
                         <form
                             onSubmit={handleSubmit(onSubmitTime)}
                             className="bg-[#272731] rounded-xl shadow-lg overflow-hidden"
@@ -273,7 +278,7 @@ export const Times = () => {
                                     />
                                 ))}
                             </div>
-                            
+
                             <div className="bg-[#2C2C34] py-4 px-6 flex justify-end">
                                 <button
                                     type="submit"
@@ -373,30 +378,53 @@ export const Times = () => {
                                     </div>
 
                                     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-7 gap-5">
-                                        {/* Estatísticas do Jogador */}
                                         {estatisticas.map((grupo) => (
                                             <div key={grupo.group} className="bg-[#1C1C24] p-4 rounded-lg">
-                                                <div className="text-lg font-bold mb-4 text-[#63E300]">
-                                                    {grupo.group.toUpperCase()}
+                                                {/* Cabeçalho clicável do grupo de estatísticas */}
+                                                <button
+                                                    type="button"
+                                                    onClick={() => toggleGroup(grupo.group)}
+                                                    className="w-full text-left flex justify-between items-center text-lg font-bold mb-2 text-[#63E300]"
+                                                >
+                                                    <span>{grupo.group.toUpperCase()}</span>
+                                                    <svg
+                                                        xmlns="http://www.w3.org/2000/svg"
+                                                        className={`h-5 w-5 transition-transform ${expandedGroups[grupo.group] ? 'transform rotate-180' : ''}`}
+                                                        fill="none"
+                                                        viewBox="0 0 24 24"
+                                                        stroke="currentColor"
+                                                    >
+                                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                                                    </svg>
+                                                </button>
+
+                                                {/* Conteúdo que aparece/desaparece */}
+                                                <div
+                                                    className={`transition-all duration-300 overflow-hidden ${expandedGroups[grupo.group]
+                                                            ? 'max-h-[1000px] opacity-100'
+                                                            : 'max-h-0 opacity-0'
+                                                        }`}
+                                                >
+                                                    {grupo.fields.map((field) => (
+                                                        <FormField
+                                                            key={field.id}
+                                                            label={field.label}
+                                                            id={`estatisticas.${grupo.group}.${field.id}`}
+                                                            register={registerJogador(
+                                                                `estatisticas.${grupo.group}.${field.id}` as keyof JogadorFormData,
+                                                                {
+                                                                    setValueAs: (v) => (v === "" ? undefined : field.type === "string" ? v : Number(v)),
+                                                                }
+                                                            )}
+                                                            error={get(jogadorErrors, `estatisticas.${grupo.group}.${field.id}`) as FieldError | undefined}
+                                                            type={field.type === "string" ? "text" : "number"}
+                                                        />
+                                                    ))}
                                                 </div>
-                                                {grupo.fields.map((field) => (
-                                                    <FormField
-                                                        key={field.id}
-                                                        label={field.label}
-                                                        id={`estatisticas.${grupo.group}.${field.id}`}
-                                                        register={registerJogador(
-                                                            `estatisticas.${grupo.group}.${field.id}` as keyof JogadorFormData,
-                                                            {
-                                                                setValueAs: (v) => (v === "" ? undefined : field.type === "string" ? v : Number(v)),
-                                                            }
-                                                        )}
-                                                        error={get(jogadorErrors, `estatisticas.${grupo.group}.${field.id}`) as FieldError | undefined}
-                                                        type={field.type === "string" ? "text" : "number"}
-                                                    />
-                                                ))}
                                             </div>
                                         ))}
                                     </div>
+
                                 </div>
 
                                 <div className="bg-[#2C2C34] py-4 px-6 flex justify-end">
@@ -432,7 +460,7 @@ export const Times = () => {
                                 Temporada {temporadaSelecionada}
                             </span>
                         </div>
-                        
+
                         {loading ? (
                             <div className="bg-[#272731] rounded-xl p-6 flex justify-center items-center h-64">
                                 <div className="flex flex-col items-center">
@@ -463,7 +491,7 @@ export const Times = () => {
                                                     {time.sigla}
                                                 </span>
                                             </div>
-                                            
+
                                             <div className="space-y-2 text-gray-400 text-sm">
                                                 <div className="flex items-center">
                                                     <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-2 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -486,17 +514,17 @@ export const Times = () => {
                                                 </div>
                                             </div>
                                         </div>
-                                        
+
                                         <div className="bg-[#1C1C24] px-5 py-3 flex justify-end">
                                             <button className="text-xs text-[#63E300] font-medium hover:text-white transition-colors">
-                                                Ver detalhes 
+                                                Ver detalhes
                                             </button>
                                         </div>
                                     </div>
                                 ))}
                             </div>
                         )}
-                        
+
                         {times.length === 0 && !loading && (
                             <div className="bg-[#272731] rounded-xl p-10 text-center">
                                 <svg xmlns="http://www.w3.org/2000/svg" className="h-16 w-16 mx-auto text-gray-600 mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">

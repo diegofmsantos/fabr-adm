@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { api } from "@/api/api";
 import { Time } from "@/types/time";
+import { fieldGroups } from "@/utils/campos";
 
 export default function ModalTime({
     time,
@@ -94,53 +95,6 @@ export default function ModalTime({
         );
     };
 
-    // Campos organizados em grupos para melhor layout
-    const fieldGroups = [
-        {
-            title: "Informações Básicas",
-            fields: [
-                { name: "nome", label: "Nome do Time" },
-                { name: "sigla", label: "Sigla" },
-                { name: "cor", label: "Cor" },
-                { name: "cidade", label: "Cidade" },
-                { name: "bandeira_estado", label: "Bandeira do Estado" },
-                { name: "fundacao", label: "Fundação" },
-            ]
-        },
-        {
-            title: "Redes Sociais",
-            fields: [
-                { name: "instagram", label: "Instagram" },
-                { name: "instagram2", label: "Instagram 2" },
-                { name: "instagram_coach", label: "Instagram Coach" },
-            ]
-        },
-        {
-            title: "Identidade Visual",
-            fields: [
-                { name: "logo", label: "Logo" },
-                { name: "capacete", label: "Capacete" },
-                { name: "estadio", label: "Estádio" },
-            ]
-        },
-        {
-            title: "Staff Técnico",
-            fields: [
-                { name: "presidente", label: "Presidente" },
-                { name: "head_coach", label: "Head Coach" },
-                { name: "coord_ofen", label: "Coordenador Ofensivo" },
-                { name: "coord_defen", label: "Coordenador Defensivo" },
-            ]
-        },
-        {
-            title: "Títulos",
-            fields: [
-                { name: "titulos.nacionais", label: "Títulos Nacionais" },
-                { name: "titulos.conferencias", label: "Títulos Conferências" },
-                { name: "titulos.estaduais", label: "Títulos Estaduais" },
-            ]
-        }
-    ];
 
     return (
         <div className="fixed inset-0 z-50 overflow-hidden">
@@ -274,7 +228,7 @@ export default function ModalTime({
                                                 className="w-10 flex-shrink-0 h-full flex items-center justify-center"
                                                 style={{ backgroundColor: formData.cor || '#63E300' }}
                                             >
-                                                <span className="text-white font-bold">{jogador.numero || '#'}</span>
+                                                <span className="text-white font-bold">{jogador.numero}</span>
                                             </div>
                                             <div className="p-3 flex-grow">
                                                 <h4 className="text-white font-medium">{jogador.nome}</h4>
