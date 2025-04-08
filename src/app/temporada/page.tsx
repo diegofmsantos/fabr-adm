@@ -6,6 +6,7 @@ import { Time } from "@/types/time"
 import { TeamChangesForm, TimeChange } from "@/components/TeamChangesForm"
 import { PlayerTransferForm, Transferencia } from "@/components/PlayerTransferForm"
 import Link from "next/link"
+import Image from "next/image"
 
 export default function IniciarTemporadaPage() {
   const [times, setTimes] = useState<Time[]>([]);
@@ -134,16 +135,34 @@ export default function IniciarTemporadaPage() {
 
   return (
     <div className="p-4 overflow-x-hidden bg-[#1C1C24] min-h-screen">
-      <Link
-        href={`/`}
-        className="w-20 h-11 font-bold text-lg bg-[#63E300] p-2 text-center rounded-md absolute right-6 left-6 text-black hover:bg-[#50B800] transition-colors"
-      >
-        Home
-      </Link>
-      <h1 className="text-4xl font-bold text-white text-center mb-8">Iniciar Temporada {targetSeason}</h1>
+      <header className="sticky top-0 z-10 bg-gradient-to-r from-[#191920] to-[#272731] shadow-xl">
+        <div className="w-full px-2 py-4 flex justify-between items-center">
+          <Link href="/" className="text-white font-bold text-xl flex items-center">
+            <Image
+              src="/logo-fabr-color.png"
+              alt="Logo"
+              width={200}
+              height={100}
+            />
+          </Link>
+          <h1 className="text-4xl text-[#63E300] font-extrabold italic leading-[55px] tracking-[-3px]">GERENCIAR MATÉRIAS - INICIAR TEMPORADA {targetSeason}</h1>
+          <div className="flex ml-auto gap-4 mr-4">
+            
+            <Link
+              href={`/`}
+              className="px-4 py-2 bg-[#63E300] text-black rounded-lg hover:bg-[#50B800] transition-colors flex items-center font-medium"
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
+              </svg>
+              Home
+            </Link>
+          </div>
+        </div>
+      </header>
 
       {/* Seleção de temporadas */}
-      <div className="mb-8 bg-[#272731] p-6 rounded-lg">
+      <div className="mb-8 bg-[#272731] mt-20 p-6 rounded-lg">
         <div className="grid grid-cols-2 gap-4">
           <div>
             <label className="block text-white text-sm font-medium mb-2">

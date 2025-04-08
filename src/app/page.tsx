@@ -37,8 +37,8 @@ export default function HomePage() {
   return (
     <div className="min-h-screen bg-[#1C1C24] p-6">
       <div className="max-w-7xl mx-auto">
-        <h1 className="text-4xl font-bold text-white text-center mb-6">
-          FABR Network - Painel de Administração
+        <h1 className="text-5xl text-[#63E300] font-extrabold italic leading-[55px] tracking-[-3px] text-center mb-6">
+          FABR NETWORK - PAINEL DE ADMINISTRAÇÃO
         </h1>
         <p className="text-gray-300 text-center mb-12">
           Gerencie times, jogadores, matérias e obtenha insights sobre o futebol americano brasileiro
@@ -76,6 +76,14 @@ export default function HomePage() {
           <p className="text-gray-500">
             © {new Date().getFullYear()} FABR Network - Todos os direitos reservados
           </p>
+        </div>
+        <div className='flex justify-center items-center mx-auto w-60 h-20'>
+          <Image
+            src="/logo-fabr-color.png"
+            alt="Logo"
+            width={200}
+            height={100}
+          />
         </div>
       </div>
     </div>

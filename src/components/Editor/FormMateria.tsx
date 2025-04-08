@@ -27,7 +27,7 @@ export const FormMateria = () => {
 
   const [materias, setMaterias] = useState<Materia[]>([])
   const [selectedMateria, setSelectedMateria] = useState<Materia | null>(null)
-  
+
   // Novos estados para interações
   const [activeView, setActiveView] = useState<'grid' | 'list'>('grid')
   const [isFormMinimized, setIsFormMinimized] = useState(false)
@@ -61,14 +61,14 @@ export const FormMateria = () => {
   const formatarDataLocal = () => {
     // Obtém a data atual
     const dataAtual = new Date();
-    
+
     // Formata a data no formato ISO para campos datetime-local
     const ano = dataAtual.getFullYear();
     const mes = String(dataAtual.getMonth() + 1).padStart(2, '0');
     const dia = String(dataAtual.getDate()).padStart(2, '0');
     const hora = String(dataAtual.getHours()).padStart(2, '0');
     const minuto = String(dataAtual.getMinutes()).padStart(2, '0');
-    
+
     return `${ano}-${mes}-${dia}T${hora}:${minuto}`;
   };
 
@@ -80,7 +80,7 @@ export const FormMateria = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
-    
+
     try {
       const materiaData = {
         ...formData,
@@ -91,9 +91,9 @@ export const FormMateria = () => {
       await createNoticia(materiaData);
       const noticiasAtualizadas = await getNoticias();
       setMaterias(noticiasAtualizadas);
-      
+
       setSuccessMessage('Matéria criada com sucesso!')
-      
+
       setFormData({
         titulo: '',
         subtitulo: '',
@@ -105,10 +105,10 @@ export const FormMateria = () => {
         createdAt: new Date().toISOString().slice(0, 16),
         updatedAt: new Date().toISOString().slice(0, 16)
       });
-      
+
       setPreviewImage(null);
       setPreviewAuthorImage(null);
-      
+
     } catch (error) {
       console.error('Erro ao salvar:', error);
       setSuccessMessage('Erro ao salvar a matéria')
@@ -148,11 +148,19 @@ export const FormMateria = () => {
   return (
     <div className="min-h-screen bg-[#0F0F13]">
       {/* Header moderno com degradê */}
-      <header className="bg-gradient-to-r from-[#191920] to-[#272731] shadow-xl">
+      <header className="sticky top-0 z-10 bg-gradient-to-r from-[#191920] to-[#272731] shadow-xl">
         <div className="w-full px-2 py-4 flex justify-between items-center">
-          <h1 className="text-4xl text-[#63E300] font-extrabold italic leading-[55px] tracking-[-3px]">GERENCIADOR DE MATÉRIAS</h1>
-          <div className="flex ml-auto gap-4">
-            <button 
+          <Link href="/" className="text-white font-bold text-xl flex items-center">
+            <Image
+              src="/logo-fabr-color.png"
+              alt="Logo"
+              width={200}
+              height={100}
+            />
+          </Link>
+          <h1 className="text-4xl text-[#63E300] font-extrabold italic leading-[55px] tracking-[-3px]">GERENCIAR MATÉRIAS</h1>
+          <div className="flex ml-auto gap-4 mr-4">
+            <button
               onClick={() => setIsFormMinimized(!isFormMinimized)}
               className="px-4 py-2 bg-[#272731] text-white rounded-lg hover:bg-[#323240] transition-all flex items-center"
             >
@@ -184,10 +192,10 @@ export const FormMateria = () => {
           </div>
         </div>
       </header>
-      
+
       {/* Mensagem de sucesso */}
       {successMessage && (
-        <motion.div 
+        <motion.div
           initial={{ opacity: 0, y: -50 }}
           animate={{ opacity: 1, y: 0 }}
           exit={{ opacity: 0, y: -50 }}
@@ -206,7 +214,7 @@ export const FormMateria = () => {
         {/* Área de controle de visualização */}
         <div className="flex justify-between items-center mb-6">
           <h2 className="text-2xl font-bold text-white">
-            Matérias Publicadas 
+            Matérias Publicadas
             <span className="ml-2 text-sm font-normal bg-[#272731] px-2 py-1 rounded text-gray-400">
               {materias.length} matérias
             </span>
@@ -230,11 +238,11 @@ export const FormMateria = () => {
             </button>
           </div>
         </div>
-        
+
         {/* Layout Flexível */}
         <div className="flex flex-col lg:flex-row gap-6">
           {/* Formulário (Pode ser minimizado/maximizado) */}
-          <motion.div 
+          <motion.div
             className={`${isFormMinimized ? 'lg:w-0 overflow-hidden' : 'lg:w-3/5'} bg-[#191920] rounded-xl shadow-xl transition-all duration-300`}
             initial={{ opacity: 0, x: -50 }}
             animate={{ opacity: 1, x: 0 }}
@@ -332,7 +340,7 @@ export const FormMateria = () => {
                       </svg>
                       Informações do Autor
                     </h3>
-                    
+
                     <div className="flex items-start gap-4">
                       <div className="flex-shrink-0">
                         <input
@@ -387,7 +395,7 @@ export const FormMateria = () => {
                         />
                       </FormField>
                     </div>
-                    
+
                     <div className="bg-[#0F0F13] p-4 rounded-lg border border-gray-800">
                       <FormField label="Data de Atualização">
                         <InputField
@@ -433,7 +441,7 @@ export const FormMateria = () => {
           </motion.div>
 
           {/* Lista de Matérias */}
-          <motion.div 
+          <motion.div
             className={`${isFormMinimized ? 'w-full' : 'lg:w-2/5'} transition-all duration-300`}
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
@@ -455,7 +463,7 @@ export const FormMateria = () => {
                 </button>
               </div>
             ) : (
-              <div className={activeView === 'grid' 
+              <div className={activeView === 'grid'
                 ? "grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6"
                 : "flex flex-col gap-4"
               }>
@@ -464,8 +472,8 @@ export const FormMateria = () => {
                     key={materia.id}
                     layoutId={`materia-${materia.id}`}
                     initial={{ opacity: 0, y: 20 }}
-                    animate={{ 
-                      opacity: 1, 
+                    animate={{
+                      opacity: 1,
                       y: 0,
                       transition: { delay: index * 0.05 }
                     }}
@@ -487,7 +495,7 @@ export const FormMateria = () => {
                       />
                       <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent opacity-70"></div>
                     </div>
-                    
+
                     {/* Conteúdo */}
                     <div className={`p-4 ${activeView === 'list' ? 'flex-1' : ''}`}>
                       <h3 className="text-white font-bold text-lg line-clamp-2 mb-1 hover:text-[#63E300] transition-colors">
@@ -496,7 +504,7 @@ export const FormMateria = () => {
                       <p className="text-gray-400 text-sm line-clamp-2 mb-3">
                         {materia.subtitulo}
                       </p>
-                      
+
                       <div className="flex items-center justify-between">
                         <div className="flex items-center gap-2">
                           <div className="relative w-8 h-8 rounded-full overflow-hidden bg-[#272731]">
@@ -511,7 +519,7 @@ export const FormMateria = () => {
                             {materia.autor}
                           </span>
                         </div>
-                        
+
                         <span className="text-gray-500 text-xs bg-[#0F0F13] px-2 py-1 rounded-full">
                           {new Date(materia.createdAt).toLocaleDateString('pt-BR')}
                         </span>

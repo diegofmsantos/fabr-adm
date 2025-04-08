@@ -15,6 +15,7 @@ import ModalJogador from "@/components/Modal/ModalJogador";
 import ModalSucesso from "./Modal/ModalSucesso"
 import { camposJogador, camposNumericosJogador, camposTime, estatisticas } from "../utils/campos"
 import Link from "next/link"
+import Image from "next/image"
 
 type TimeFormData = z.infer<typeof TimeSchema>
 type JogadorFormData = z.infer<typeof JogadorSchema>
@@ -152,14 +153,20 @@ export const Times = () => {
     return (
         <div className="bg-[#1C1C24] min-h-screen">
             {/* Header com navegação e seletor de temporada */}
-            <div className="sticky top-0 z-10 bg-[#272731] shadow-lg">
-                <div className="max-w-7xl mx-auto px-4 py-3 flex flex-wrap justify-between items-center">
-                    <Link href="/" className="text-white font-bold text-xl flex items-center">
-                        <span className="bg-[#63E300] text-black rounded-md px-3 py-1 mr-2">FABR</span>
-                        Network
-                    </Link>
-
-                    <div className="flex items-center space-x-4">
+            <header className="sticky top-0 z-10 bg-gradient-to-r from-[#191920] to-[#272731] shadow-xl mb-4">
+                <div className="w-full px-2 py-4 flex justify-between items-center">
+                    <div className='flex items-center'>
+                        <Link href="/" className="text-white font-bold text-xl flex items-center">
+                            <Image
+                                src="/logo-fabr-color.png"
+                                alt="Logo"
+                                width={200}
+                                height={100}
+                            />
+                        </Link>
+                        <h1 className="text-4xl text-[#63E300] font-extrabold italic leading-[55px] tracking-[-3px]">GERENCIAR TIMES E JOGADORES</h1>
+                    </div>
+                    <div className='flex'>
                         <div className="flex items-center bg-[#1C1C24] px-3 py-2 rounded-lg">
                             <span className="text-white text-sm mr-2">Temporada:</span>
                             <select
@@ -171,29 +178,35 @@ export const Times = () => {
                                 <option value="2025">2025</option>
                             </select>
                         </div>
-
-                        <Link
-                            href="/"
-                            className="bg-gray-700 text-gray-200 hover:bg-gray-600 transition duration-200 px-3 py-2 rounded-lg text-sm"
-                        >
-                            Voltar para Home
-                        </Link>
+                        <div className="flex ml-auto gap-4 mr-4">
+                            <Link
+                                href={`/`}
+                                className="px-4 py-2 bg-[#63E300] text-black rounded-lg hover:bg-[#50B800] transition-colors flex items-center font-medium"
+                            >
+                                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
+                                </svg>
+                                Home
+                            </Link>
+                        </div>
                     </div>
                 </div>
-            </div>
+            </header>
+
+           
 
             {/* Tabs de navegação */}
-            <div className="bg-[#272731] border-b border-gray-700 sticky top-16 z-10">
+            <div className="bg-[#272731] border-b border-gray-700 sticky top-20 z-10">
                 <div className="max-w-7xl mx-auto px-4">
-                    <nav className="flex space-x-1">
+                    <nav className="flex justify-between">
                         <button
                             onClick={() => setActiveTab('time')}
-                            className={`px-4 py-4 text-sm font-medium transition-colors relative ${activeTab === 'time'
-                                    ? 'text-[#63E300]'
-                                    : 'text-gray-400 hover:text-white'
+                            className={`px-4 py-4 text-xl font-extrabold italic leading-[55px] tracking-[-1px] transition-colors relative ${activeTab === 'time'
+                                ? 'text-[#63E300]'
+                                : 'text-gray-400 hover:text-white'
                                 }`}
                         >
-                            Adicionar Time
+                            ADICIONAR TIME
                             {activeTab === 'time' && (
                                 <span className="absolute bottom-0 left-0 w-full h-0.5 bg-[#63E300]"></span>
                             )}
@@ -201,12 +214,12 @@ export const Times = () => {
 
                         <button
                             onClick={() => setActiveTab('jogador')}
-                            className={`px-4 py-4 text-sm font-medium transition-colors relative ${activeTab === 'jogador'
-                                    ? 'text-[#63E300]'
-                                    : 'text-gray-400 hover:text-white'
+                            className={`px-4 py-4 text-xl font-extrabold italic leading-[55px] tracking-[-1px] transition-colors relative ${activeTab === 'jogador'
+                                ? 'text-[#63E300]'
+                                : 'text-gray-400 hover:text-white'
                                 }`}
                         >
-                            Adicionar Jogador
+                            ADICIONAR JOGADOR
                             {activeTab === 'jogador' && (
                                 <span className="absolute bottom-0 left-0 w-full h-0.5 bg-[#63E300]"></span>
                             )}
@@ -214,12 +227,12 @@ export const Times = () => {
 
                         <button
                             onClick={() => setActiveTab('times-cadastrados')}
-                            className={`px-4 py-4 text-sm font-medium transition-colors relative ${activeTab === 'times-cadastrados'
-                                    ? 'text-[#63E300]'
-                                    : 'text-gray-400 hover:text-white'
+                            className={`px-4 py-4 text-xl font-extrabold italic leading-[55px] tracking-[-1px] transition-colors relative ${activeTab === 'times-cadastrados'
+                                ? 'text-[#63E300]'
+                                : 'text-gray-400 hover:text-white'
                                 }`}
                         >
-                            Times Cadastrados
+                            TIMES CADASTRADOS
                             {activeTab === 'times-cadastrados' && (
                                 <span className="absolute bottom-0 left-0 w-full h-0.5 bg-[#63E300]"></span>
                             )}
@@ -401,8 +414,8 @@ export const Times = () => {
                                                 {/* Conteúdo que aparece/desaparece */}
                                                 <div
                                                     className={`transition-all duration-300 overflow-hidden ${expandedGroups[grupo.group]
-                                                            ? 'max-h-[1000px] opacity-100'
-                                                            : 'max-h-0 opacity-0'
+                                                        ? 'max-h-[1000px] opacity-100'
+                                                        : 'max-h-0 opacity-0'
                                                         }`}
                                                 >
                                                     {grupo.fields.map((field) => (
