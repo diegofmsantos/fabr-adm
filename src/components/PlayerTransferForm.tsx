@@ -16,6 +16,8 @@ export interface Transferencia {
   timeOrigemNome?: string;
   novoTimeId: number;
   novoTimeNome?: string;
+  novaPosicao?: string
+  novosetor?: string
   novoNumero?: number;
   novaCamisa?: string;
 }
@@ -24,31 +26,34 @@ export function PlayerTransferForm({ jogadores, times, onAddTransfer }: PlayerTr
   const [selectedJogador, setSelectedJogador] = useState<Jogador | null>(null);
   const [searchTerm, setSearchTerm] = useState<string>('');
   const [selectedNovoTime, setSelectedNovoTime] = useState<string>('');
+  const [novaPosicao, setNovaPosicao] = useState<string>('');
+  const [novoSetor, setNovoSetor] = useState<string>('');
   const [novoNumero, setNovoNumero] = useState<string>('');
+  const [novaCamisa, setNovaCamisa] = useState<string>('');
   const [showDropdown, setShowDropdown] = useState<boolean>(false);
-  
+
   // Filtrar jogadores com base no termo de busca
-  const filteredJogadores = searchTerm 
-    ? jogadores.filter(jogador => 
-        jogador.nome?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        jogador.posicao?.toLowerCase().includes(searchTerm.toLowerCase())
-      )
+  const filteredJogadores = searchTerm
+    ? jogadores.filter(jogador =>
+      jogador.nome?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      jogador.posicao?.toLowerCase().includes(searchTerm.toLowerCase())
+    )
     : [];
-  
+
   const handleSelectJogador = (jogador: Jogador) => {
     setSelectedJogador(jogador);
     setSearchTerm(jogador.nome || '');
     setShowDropdown(false);
   };
-  
+
   const handleSubmit = () => {
     if (!selectedJogador || !selectedNovoTime) return;
-    
+
     const novoTime = times.find(t => t.id === Number(selectedNovoTime));
     if (!novoTime || selectedJogador.timeId === Number(selectedNovoTime)) return;
-    
+
     const timeOrigem = times.find(t => t.id === selectedJogador.timeId);
-    
+
     const transferencia: Transferencia = {
       jogadorId: selectedJogador.id || 0,
       jogadorNome: selectedJogador.nome,
@@ -56,34 +61,40 @@ export function PlayerTransferForm({ jogadores, times, onAddTransfer }: PlayerTr
       timeOrigemNome: timeOrigem?.nome,
       novoTimeId: Number(selectedNovoTime),
       novoTimeNome: novoTime.nome,
-      novoNumero: novoNumero ? Number(novoNumero) : undefined
+      novaPosicao: novaPosicao,
+      novosetor: novoSetor,
+      novoNumero: novoNumero ? Number(novoNumero) : undefined,
+      novaCamisa: novaCamisa
     };
-    
+
     onAddTransfer(transferencia);
-    
+
     // Reset
     setSelectedJogador(null);
     setSearchTerm('');
     setSelectedNovoTime('');
+    setNovaPosicao('')
+    setNovoSetor('')
     setNovoNumero('');
+    setNovaCamisa('')
   };
-  
+
   // Fechar o dropdown quando clicar fora
   useEffect(() => {
     const handleClickOutside = () => {
       setShowDropdown(false);
     };
-    
+
     document.addEventListener('click', handleClickOutside);
     return () => {
       document.removeEventListener('click', handleClickOutside);
     };
   }, []);
-  
+
   return (
     <div className="mb-8 bg-[#272731] p-6 rounded-lg">
       <h2 className="text-2xl font-bold text-white mb-4">Transferências de Jogadores</h2>
-      
+
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
         {/* Input de busca ao invés de select para jogadores */}
         <div className="relative">
@@ -107,10 +118,10 @@ export function PlayerTransferForm({ jogadores, times, onAddTransfer }: PlayerTr
             className="w-full px-3 py-2 bg-[#1C1C24] border border-gray-700 rounded-lg text-white focus:outline-none focus:border-[#63E300]"
             placeholder="Digite o nome do jogador..."
           />
-          
+
           {/* Lista de jogadores filtrados */}
           {showDropdown && searchTerm && (
-            <div 
+            <div
               className="absolute z-10 mt-1 w-full bg-[#1C1C24] border border-gray-700 rounded-lg max-h-60 overflow-y-auto"
               onClick={(e) => e.stopPropagation()}
             >
@@ -133,7 +144,7 @@ export function PlayerTransferForm({ jogadores, times, onAddTransfer }: PlayerTr
             </div>
           )}
         </div>
-        
+
         {/* Seleção de novo time */}
         <div>
           <label className="block text-white text-sm font-medium mb-2">
@@ -155,8 +166,43 @@ export function PlayerTransferForm({ jogadores, times, onAddTransfer }: PlayerTr
               ))}
           </select>
         </div>
-        
-        {/* Novo número */}
+
+
+
+        {/* Nova Posição */}
+        <div>
+          <label className="block text-white text-sm font-medium mb-2">
+            Nova Posição (opcional)
+          </label>
+          <input
+            type="text"
+            value={novaPosicao}
+            onChange={(e) => setNovaPosicao(e.target.value)}
+            className="w-full px-3 py-2 bg-[#1C1C24] border border-gray-700 rounded-lg text-white focus:outline-none focus:border-[#63E300]"
+            disabled={!selectedJogador || !selectedNovoTime}
+            placeholder="Posição"
+          />
+        </div>
+
+        {/* Novo Setor */}
+        <div>
+          <label className="block text-white text-sm font-medium mb-2">
+            Novo Setor (opcional)
+          </label>
+          <select
+            value={novoSetor}
+            onChange={(e) => setNovoSetor(e.target.value)}
+            className="w-full px-3 py-2 bg-[#1C1C24] border border-gray-700 rounded-lg text-white focus:outline-none focus:border-[#63E300]"
+            disabled={!selectedJogador || !selectedNovoTime}
+          >
+            <option value="">Selecione...</option>
+            <option value="Ataque">Ataque</option>
+            <option value="Defesa">Defesa</option>
+            <option value="Special">Special</option>
+          </select>
+        </div>
+
+        {/* Nova Número */}
         <div>
           <label className="block text-white text-sm font-medium mb-2">
             Novo Número (opcional)
@@ -170,8 +216,24 @@ export function PlayerTransferForm({ jogadores, times, onAddTransfer }: PlayerTr
             placeholder="Número na camisa"
           />
         </div>
+
+        <div>
+          <label className="block text-white text-sm font-medium mb-2">
+            Nova Camisa (opcional)
+          </label>
+          <input
+            type="text"
+            value={novaCamisa}
+            onChange={(e) => setNovaCamisa(e.target.value)}
+            className="w-full px-3 py-2 bg-[#1C1C24] border border-gray-700 rounded-lg text-white focus:outline-none focus:border-[#63E300]"
+            disabled={!selectedJogador || !selectedNovoTime}
+            placeholder="Número na camisa"
+          />
+        </div>
       </div>
-      
+
+
+
       {/* Informações do jogador selecionado */}
       {selectedJogador && (
         <div className="bg-[#1C1C24] p-4 rounded-lg mb-4">
@@ -185,7 +247,7 @@ export function PlayerTransferForm({ jogadores, times, onAddTransfer }: PlayerTr
           </div>
         </div>
       )}
-      
+
       <div className="flex justify-end">
         <button
           onClick={handleSubmit}

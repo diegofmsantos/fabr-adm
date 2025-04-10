@@ -34,6 +34,7 @@ export function TeamChangesForm({ times, onAddChange }: TeamChangesProps) {
           nome: time.nome,
           sigla: time.sigla,
           cor: time.cor,
+          capacete: time.capacete,
           presidente: time.presidente,
           head_coach: time.head_coach,
           coord_ofen: time.coord_ofen,
@@ -67,6 +68,11 @@ export function TeamChangesForm({ times, onAddChange }: TeamChangesProps) {
     
     if (timeForm.cor && timeForm.cor !== timeExistente.cor) {
       alteracoes.cor = timeForm.cor;
+      temAlteracoes = true;
+    }
+
+    if (timeForm.capacete && timeForm.capacete !== timeExistente.capacete) {
+      alteracoes.capacete = timeForm.capacete;
       temAlteracoes = true;
     }
     
@@ -160,6 +166,17 @@ export function TeamChangesForm({ times, onAddChange }: TeamChangesProps) {
               type="text"
               value={timeForm.cor || ""}
               onChange={(e) => setTimeForm({ ...timeForm, cor: e.target.value })}
+              className="w-full px-3 py-2 bg-[#1C1C24] border border-gray-700 rounded-lg text-white focus:outline-none focus:border-[#63E300]"
+            />
+          </div>
+          <div>
+            <label className="block text-white text-sm font-medium mb-2">
+              Capacete
+            </label>
+            <input
+              type="text"
+              value={timeForm.capacete || ""}
+              onChange={(e) => setTimeForm({ ...timeForm, capacete: e.target.value })}
               className="w-full px-3 py-2 bg-[#1C1C24] border border-gray-700 rounded-lg text-white focus:outline-none focus:border-[#63E300]"
             />
           </div>
