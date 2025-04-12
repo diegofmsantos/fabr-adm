@@ -3,6 +3,7 @@
 import React from 'react'
 import { useRouter } from 'next/navigation'
 import Image from 'next/image'
+import LogoutButton from '@/components/LogoutButton'
 
 export default function HomePage() {
   const router = useRouter()
@@ -36,9 +37,17 @@ export default function HomePage() {
 
   return (
     <div className="min-h-screen bg-[#1C1C24] p-6">
+      {/* Header com botão de logout */}
+      <header className="flex justify-center items-center mb-8">
+        <h1 className="text-5xl text-[#63E300] font-extrabold italic leading-[55px] tracking-[-3px]">
+          FABR NETWORK
+        </h1>
+      </header>
+        <LogoutButton />
+      
       <div className="max-w-7xl mx-auto">
         <h1 className="text-5xl text-[#63E300] font-extrabold italic leading-[55px] tracking-[-3px] text-center mb-6">
-          FABR NETWORK - PAINEL DE ADMINISTRAÇÃO
+          PAINEL DE ADMINISTRAÇÃO
         </h1>
         <p className="text-gray-300 text-center mb-12">
           Gerencie times, jogadores, matérias e obtenha insights sobre o futebol americano brasileiro
@@ -49,7 +58,7 @@ export default function HomePage() {
             <div
               key={index}
               onClick={() => router.push(card.route)}
-              className="bg-[#272731] rounded-lg p-6 cursor-pointer transition-all duration-300 hover:shadow-xl hover:translate-y-[-5px] hover:bg-[#2C2C34] border border-gray-700 hover:border-[#63E300]"
+              className="bg-[#272731] rounded-lg p-6 cursor-pointer transition-all duration-300 hover:shadow-xl hover:translate-y-[-5px] hover:border-[#63E300] border border-gray-700"
             >
               <div className="flex items-center mb-4">
                 <div className="w-10 h-10 mr-3 bg-[#1C1C24] rounded-full flex items-center justify-center">
