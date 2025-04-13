@@ -20,7 +20,8 @@ export default function ModalJogador({
         ...jogador,
         altura: jogador.altura !== undefined ? String(jogador.altura).replace(".", ",") : "",
         temporada: jogador.times?.[0]?.temporada || "2025",
-        estatisticas: jogador.estatisticas || {}
+        estatisticas: jogador.estatisticas || {},
+        camisa: jogador.camisa 
     });
     
     const [activeTab, setActiveTab] = useState<'info' | 'estatisticas'>('info');
@@ -59,11 +60,15 @@ export default function ModalJogador({
     const handleSave = async () => {
         setIsSubmitting(true);
         try {
-            // Converta corretamente o valor da altura
+            console.log("Iniciando atualização do jogador");
+            console.log("Valor da camisa antes do envio:", formData.camisa);
+            
+            // Converter altura corretamente
             const altura = formData.altura
                 ? Number(String(formData.altura).replace(',', '.'))
                 : jogador.altura;
     
+            // Garantir conversão adequada dos valores numéricos
             const parsedValues = {
                 altura: altura,
                 peso: Number(formData.peso),
@@ -72,25 +77,26 @@ export default function ModalJogador({
                 numero: Number(formData.numero)
             };
     
-            const dataToSave = {
-                ...parsedValues,
-                ...formData,
-                altura: altura,
-                temporada: formData.temporada || "2025",
-                estatisticas: formData.estatisticas
-            };
-    
+            // Construir objeto final para envio à API
+            // Cuidado para não duplicar campos que já existem no formData
             const apiData = {
-                ...dataToSave,
-                id: jogador.id,
-                timeId: jogador.timeId,
+                ...formData,          // Incluir todos os campos do formData primeiro
+                ...parsedValues,      // Sobrescrever com valores numéricos convertidos
+                timeId: jogador.timeId // Garantir que timeId esteja presente
             };
     
-            await atualizarJogador(apiData);
+            console.log("Dados completos enviados para API:", apiData);
+            
+            // Enviar a requisição e aguardar a resposta
+            const response = await atualizarJogador(apiData);
+            console.log("Resposta da API após atualização:", response);
+            
+            // Fechar o modal e atualizar a UI
             closeModal();
-            router.refresh(); // Força recarregamento
+            router.refresh();
         } catch (error) {
             console.error("Erro ao atualizar jogador:", error);
+            alert("Ocorreu um erro ao atualizar o jogador. Verifique o console para mais detalhes.");
         } finally {
             setIsSubmitting(false);
         }

@@ -10,6 +10,8 @@ export interface TimeChange {
   timeId: number;
   nome?: string;
   sigla?: string;
+  instagram?: string
+  instagram2?: string
   cor?: string;
   logo?: string;
   capacete?: string;
@@ -34,6 +36,9 @@ export function TeamChangesForm({ times, onAddChange }: TeamChangesProps) {
           nome: time.nome,
           sigla: time.sigla,
           cor: time.cor,
+          instagram: time.instagram,
+          instagram2: time.instagram2,
+          logo: time.logo,
           capacete: time.capacete,
           presidente: time.presidente,
           head_coach: time.head_coach,
@@ -68,6 +73,21 @@ export function TeamChangesForm({ times, onAddChange }: TeamChangesProps) {
     
     if (timeForm.cor && timeForm.cor !== timeExistente.cor) {
       alteracoes.cor = timeForm.cor;
+      temAlteracoes = true;
+    }
+
+    if (timeForm.instagram && timeForm.instagram !== timeExistente.instagram) {
+      alteracoes.instagram = timeForm.instagram;
+      temAlteracoes = true;
+    }
+
+    if (timeForm.instagram2 && timeForm.instagram2 !== timeExistente.instagram2) {
+      alteracoes.instagram2 = timeForm.instagram2;
+      temAlteracoes = true;
+    }
+
+    if (timeForm.logo && timeForm.logo !== timeExistente.logo) {
+      alteracoes.logo = timeForm.logo;
       temAlteracoes = true;
     }
 
@@ -166,6 +186,39 @@ export function TeamChangesForm({ times, onAddChange }: TeamChangesProps) {
               type="text"
               value={timeForm.cor || ""}
               onChange={(e) => setTimeForm({ ...timeForm, cor: e.target.value })}
+              className="w-full px-3 py-2 bg-[#1C1C24] border border-gray-700 rounded-lg text-white focus:outline-none focus:border-[#63E300]"
+            />
+          </div>
+          <div>
+            <label className="block text-white text-sm font-medium mb-2">
+              Instagram
+            </label>
+            <input
+              type="text"
+              value={timeForm.instagram || ""}
+              onChange={(e) => setTimeForm({ ...timeForm, instagram: e.target.value })}
+              className="w-full px-3 py-2 bg-[#1C1C24] border border-gray-700 rounded-lg text-white focus:outline-none focus:border-[#63E300]"
+            />
+          </div>
+          <div>
+            <label className="block text-white text-sm font-medium mb-2">
+              @
+            </label>
+            <input
+              type="text"
+              value={timeForm.instagram2 || ""}
+              onChange={(e) => setTimeForm({ ...timeForm, instagram2: e.target.value })}
+              className="w-full px-3 py-2 bg-[#1C1C24] border border-gray-700 rounded-lg text-white focus:outline-none focus:border-[#63E300]"
+            />
+          </div>
+          <div>
+            <label className="block text-white text-sm font-medium mb-2">
+              Logo
+            </label>
+            <input
+              type="text"
+              value={timeForm.logo || ""}
+              onChange={(e) => setTimeForm({ ...timeForm, logo: e.target.value })}
               className="w-full px-3 py-2 bg-[#1C1C24] border border-gray-700 rounded-lg text-white focus:outline-none focus:border-[#63E300]"
             />
           </div>
